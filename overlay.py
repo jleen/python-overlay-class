@@ -1,7 +1,13 @@
 from types import MethodType
 
 
-class Overlay:
+def overlay(overlay_class, base_object):
+    class Overlaid(overlay_class, _Overlay, base_object.__class__):
+        pass
+    return Overlaid(base_object)
+
+
+class _Overlay:
     '''An instance of Overlay is a wrapper around an object,
     shadowing one or more methods of the object's class.
     All other attribute accesses (including assignments) will be
