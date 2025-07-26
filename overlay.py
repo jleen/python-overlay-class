@@ -15,7 +15,7 @@ def overlay(overlay_class, base_object):
 
     # Three parent classes? Yes, three.
     #   1. the overlay class, for access to the new methods
-    #   2 _Overlay, the "engine" that delegates to the underlying object
+    #   2. _Overlay, the "engine" that delegates to the underlying object
     #   3. the original class of the base object, so that we conform to it
     #      (otherwise, for example, super() from a method of the base object
     #      wouldn't work when called from an overlay)
