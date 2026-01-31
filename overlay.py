@@ -19,9 +19,10 @@ def overlay(overlay_class, base_object):
     #      (otherwise, for example, super() from a method of the base object
     #      wouldn't work when called from an overlay)
     class Overlaid(overlay_class, base_object.__class__):
-        # Need to avoid re-running the underlying object's initializer.
+        # Run the initializer for the overlay class,
+        # but not for the base object (since it was already run when the base object was created).
         def __init__(self):
-            pass
+            overlay_class.__init__.__get__(self)()
 
         def __getattr__(self, name):
             # Methods defined in the overlay will have already been resolved
