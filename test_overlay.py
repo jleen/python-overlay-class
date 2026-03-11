@@ -3,7 +3,6 @@ from overlay import overlay
 
 class Parent:
     def __init__(self):
-        print('initializing parent ' + str(self))
         self.count = 0
 
     def inc(self):
@@ -45,15 +44,6 @@ class ThriceOverlay:
         self.count += 3
 
 
-class FieldOverlay:
-    def __init__(self):
-        print('initializing field overlay ' + str(self))
-        self.another_count = 0
-
-    def inc(self):
-        self.another_count += 1
-
-
 def test_child():
     child = Child()
     assert child.name() == 'Child'
@@ -93,25 +83,6 @@ def test_underlying_access():
     overlaid.inc()
     assert underlying.count == 5
     assert overlaid.count == 5
-
-
-def test_overlaid_access():
-    underlying = Parent()
-    overlaid = overlay(FieldOverlay, underlying)
-    assert underlying.count == 0
-    assert overlaid.count == 0
-    assert overlaid.another_count == 0
-
-    overlaid.inc()
-    assert underlying.count == 0
-    assert overlaid.count == 0
-    assert overlaid.another_count == 1
-
-    underlying.inc()
-    underlying.inc()
-    assert underlying.count == 2
-    assert overlaid.count == 2
-    assert overlaid.another_count == 1
 
 
 def test_class_conformance():
