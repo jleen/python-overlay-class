@@ -87,17 +87,24 @@ def test_underlying_access():
 
 def test_class_conformance():
     foo = overlay(FooOverlay, Child())
-    assert isinstance(foo, FooOverlay)
     assert isinstance(foo, Parent)
     assert isinstance(foo, Child)
 
 
-# Not supported due to diamond inheritance.
-# TODO: Can we conditionally add the conformance class?
-#       Or, given all the meta-trickery, do we even need to inherit from the overlay?
-#def test_double_overlay():
-#    foo = overlay(FooOverlay, Child())
-#    foofoo = overlay(FooOverlay, foo)
-#    assert foofoo.name() == 'Foo'
-#    assert foofoo.self_name() == 'Foo'
-#    assert foofoo.super_name() == 'Parent'
+def test_double_overlay():
+    foo = overlay(FooOverlay, Child())
+    foofoo = overlay(FooOverlay, foo)
+    barfoo = overlay(BarOverlay, foo)
+    foobarfoo = overlay(FooOverlay, barfoo)
+
+    assert foofoo.name() == 'Foo'
+    assert foofoo.self_name() == 'Foo'
+    assert foofoo.super_name() == 'Parent'
+    
+    assert barfoo.name() == 'Bar'
+    assert barfoo.self_name() == 'Bar'
+    assert barfoo.super_name() == 'Parent'
+
+    assert foobarfoo.name() == 'Foo'
+    assert foobarfoo.self_name() == 'Foo'
+    assert foobarfoo.super_name() == 'Parent'

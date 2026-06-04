@@ -1,3 +1,4 @@
+from ast import Attribute
 from types import MethodType
 
 
@@ -19,7 +20,7 @@ def overlay(overlay_class, base_object):
     #      AND so that the overlaid class conforms to the base class
     #      (otherwise, for example, super() from a method of the base object
     #      wouldn't work when called from an overlay)
-    class Overlaid(overlay_class, base_object.__class__):
+    class Overlaid(base_object.__class__):
         # We explicitly define a trivial initializer.
         #
         # The base object was already initialized when it was constructed,
@@ -32,6 +33,12 @@ def overlay(overlay_class, base_object):
         def __init__(self):
             pass
 
+        def __getattribute__(self, name):
+            try:
+                return getattr(overlay_class, name).__get__(self)
+            except AttributeError:
+                return object.__getattribute__(self, name)
+
         def __getattr__(self, name):
             # Methods defined in the overlay or the base will have already been resolved
             # by the time we get here. So, anything else should just be delegated
@@ -40,6 +47,7 @@ def overlay(overlay_class, base_object):
             # Note that we can't just allow multiple inheritance to take care of
             # this, because we need to delegate to the original *object*,
             # not just the original *class*.
+            #return getattr(base_object, name)
             return getattr(base_object, name)
 
         def __setattr__(self, name, value):
